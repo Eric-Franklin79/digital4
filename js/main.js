@@ -13,6 +13,17 @@ window.onload = function() {
        game.load.image('exit', 'assets/exit.png');
        game.load.image('background', 'assets/background.png');
        game.load.image('restartLevel', 'assets/restart.png');
+       //images for the arrow keys
+       game.load.image('left', 'assets/left.png');
+       game.load.image('leftA', 'assets/leftActive.png');
+       game.load.image('right', 'assets/right.png');
+       game.load.image('rightA', 'assets/rightA.png');
+       game.load.image('up', 'assets/up.png');
+       game.load.image('upA', 'assets/upA.png');
+       game.load.image('down', 'assets/down.png');
+       game.load.image('downA', 'assets/downA.png');
+       game.load.image('r', 'assets/r.png');
+
     }
     var bloodBags = 0;
     var bags;
@@ -20,12 +31,12 @@ window.onload = function() {
     var cursor;
     var blocktile
     var end;
-    var bloodText, restartText, scoreText;
+    var bloodText, restartText, scoreText, levelText, gameText;
     var blood = 20.0, score = 0, finalScore = 0;
     var bloodTime;
     var map;
     var reset;
-    var resetScreen;
+    var resetScreen, left, right, up, down, r;
     var currentLevel = 1;
     var levelString = '';
     var playerx = 0, playery = 0, bloodBagID = 0, endID = 0;
@@ -33,20 +44,28 @@ window.onload = function() {
    function create() {
    	   var background = game.add.sprite(641, 0, 'background');
    	   levels(currentLevel);
-   	   resetScreen = game.add.sprite(0,0, 'restartLevel');
-   	   resetScreen.kill();
-   	   var styleR = { font: "bold 25px Verdana", fill: "#FFFFFF", align: "center" };
-   	   restartText = game.add.text( 240, 320, "", styleR);
-   	   
-   	   //******* HUD bar *******
-   	   //levle counter
-   	   //what the controls are
    	   
     	   bloodTime = game.time.create(false);
     	   bloodTime.add(20000, endLevel, this);
     	   
    	   cursor = game.input.keyboard.createCursorKeys();
    	   reset = game.input.keyboard.addKey(Phaser.Keyboard.R);
+   	   var styleS = { font: "bold 12px Verdana", fill: "#000000", align: "left" };
+   	   gameText = game.add.text(645, 150, 'Game Description\nGet to the elevator\nbefore your run out of blood.\nBlood Bags           will give\nyou more blood to survive.\n' +  
+   	   	   '           are worth 10pts each\nor 30pts for not getting one.\n\n     - to restart a level\nArrow keys - to move', styleS);
+   	   var gameBag = game.add.sprite(730, 210, 'bloodbag');
+   	   var gameBag2 = game.add.sprite(655, 250, 'bloodbag');
+   	   var gameEle = game.add.sprite(785, 170, 'exit');
+   	   left = game.add.sprite(690, 375, 'left');
+   	   right = game.add.sprite(730, 375, 'right');
+   	   up = game.add.sprite(710, 355, 'up');
+   	   down = game.add.sprite(710, 375, 'down');
+   	   r = game.add.sprite(645, 310, 'r');
+   	   
+   	   resetScreen = game.add.sprite(0,0, 'restartLevel');
+   	   resetScreen.kill();
+   	   var styleR = { font: "bold 25px Verdana", fill: "#FFFFFF", align: "center" };
+   	   restartText = game.add.text( 240, 320, "", styleR);
    }
     
     function update() {
@@ -56,25 +75,33 @@ window.onload = function() {
     	
 	cooler.body.velocity.x = 0;
 	cooler.body.velocity.y = 0;
+	left.loadTexture('left');
+	right.loadTexture('right');
+	up.loadTexture('up');
+	down.loadTexture('down');
 	if(cursor.left.isDown){
+		left.loadTexture('leftA');
 		if(!bloodTime.running){
 			bloodTime.start();
 		}
 		cooler.body.velocity.x = -64;	
 	}
 	else if(cursor.right.isDown){
+		right.loadTexture('rightA');
 		if(!bloodTime.running){
 			bloodTime.start();
 		}
 		cooler.body.velocity.x = 64;
 	}
 	if(cursor.up.isDown){
+		up.loadTexture('upA');
 		if(!bloodTime.running){
 			bloodTime.start();
 		}
 		cooler.body.velocity.y = -64;
 	}
 	else if(cursor.down.isDown){
+		down.loadTexture('downA');
 		if(!bloodTime.running){
 			bloodTime.start();
 		}
@@ -107,7 +134,7 @@ window.onload = function() {
     	    finalScore += score;
     	    scoreText.setText("Score: " + String(finalScore));
     	    currentLevel++;
-    	    levels(currentLevel);
+    	    endLevel(true);
     }
     function endLevel(reset){
     	   resetScreen.kill()
@@ -115,6 +142,7 @@ window.onload = function() {
     	   end.destroy();
     	   cooler.kill();
     	   bloodTime.destroy();
+    	   map.destroy();
     	   restartText.setText("");
     	   bloodText.setText("");
     	   scoreText.setText("");
@@ -148,9 +176,10 @@ window.onload = function() {
    	   game.physics.arcade.enable(cooler);
    	   //Text for each level
    	   var styleT = { font: "bold 25px Verdana", fill: "#C90000", align: "center" };
-   	   bloodText = game.add.text(645, 40, 'Blood: 100%', styleT);
-   	   var styleS = { font: "bold 25px Verdana", fill: "#FFFFFF", align: "center" };
-   	   scoreText = game.add.text(645, 70, 'Score: ' + String(finalScore));
+   	   bloodText = game.add.text(645, 110, 'Blood: 100%', styleT);
+   	   var styleS = { font: "bold 25px Verdana", fill: "#000000", align: "center" };
+   	   scoreText = game.add.text(645, 75, 'Score: ' + String(finalScore), styleS);
+   	   levelText = game.add.text(645, 40, 'Level: ' + String(currentLevel), styleS);
    	   //create the sprites for the game objects
    	   bags = game.add.group();
    	   bags.enableBody = true;
@@ -167,7 +196,6 @@ window.onload = function() {
     function endGame() {
     	    //create an end screen
     	    //display the score
-    	    //add to the end of level array?
     }
     
 };
