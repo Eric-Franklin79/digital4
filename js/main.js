@@ -26,16 +26,21 @@ window.onload = function() {
     var map;
     var reset;
     var resetScreen;
+    var currentLevel = 1;
+    var levelString = '';
+    var playerx = 0, playery = 0, bloodBagID = 0, endID = 0;
     
    function create() {
    	   var background = game.add.sprite(641, 0, 'background');
-   	   level1();
+   	   levels(currentLevel);
    	   resetScreen = game.add.sprite(0,0, 'restartLevel');
    	   resetScreen.kill();
    	   var styleR = { font: "bold 25px Verdana", fill: "#FFFFFF", align: "center" };
    	   restartText = game.add.text( 240, 320, "", styleR);
    	   
-   	   //*******array of functions for levels *******
+   	   //******* HUD bar *******
+   	   //levle counter
+   	   //what the controls are
    	   
     	   bloodTime = game.time.create(false);
     	   bloodTime.add(20000, endLevel, this);
@@ -100,9 +105,9 @@ window.onload = function() {
     	    player.kill();
     	    finalScore += (bloodBags * 30);
     	    finalScore += score;
-    	    //call function to change level
-    	    //use an array for the different levels
-    	    //array of functions?
+    	    scoreText.setText("Score: " + String(finalScore));
+    	    currentLevel++;
+    	    levels(currentLevel);
     }
     function endLevel(reset){
     	   resetScreen.kill()
@@ -117,21 +122,29 @@ window.onload = function() {
 	   	cooler.destroy();
 		bloodTime = game.time.create(false);
 		bloodTime.add(20000, endLevel, this);
-		level1();
+		levels(currentLevel);
     	   }
     	   else{
     	   	resetScreen.revive();
     	   	restartText.setText("Press R to Restart the Level");	
     	   }
     }
-    function level1(){
-    	   map = game.add.tilemap('level1');
+    function levels(level){
+    	   if(level === 1){
+    	    	    levelString = 'level1';
+    	    	    playerx = 60;
+    	    	    playery = 600;
+    	    	    bloodBagID = 33;
+    	    	    endID = 23;
+    	    	    bloodBags = 6;
+    	   }
+    	   map = game.add.tilemap(levelString);
    	   map.addTilesetImage('hospitla-tileset', 'gameTiles');
    	   var backgroundLayer = map.createLayer('background');
    	   blocktile = map.createLayer('blocktile');
    	   map.setCollisionBetween(1, 100, true, 'blocktile');
    	   //create the player
-   	   cooler = game.add.sprite(60, 600, 'cooler');
+   	   cooler = game.add.sprite(playerx, playery, 'cooler');
    	   game.physics.arcade.enable(cooler);
    	   //Text for each level
    	   var styleT = { font: "bold 25px Verdana", fill: "#C90000", align: "center" };
@@ -141,15 +154,20 @@ window.onload = function() {
    	   //create the sprites for the game objects
    	   bags = game.add.group();
    	   bags.enableBody = true;
-   	   map.createFromObjects('blood bags', 33, 'bloodbag', 0, true, false, bags);
+   	   map.createFromObjects('blood bags', bloodBagID, 'bloodbag', 0, true, false, bags);
    	   end = game.add.group();
    	   end.enableBody = true;
-   	   map.createFromObjects('end', 23, 'exit', 0, true, false, end);
-   	   bloodBags = 6;
+   	   map.createFromObjects('end', endID, 'exit', 0, true, false, end);
+   	   score = finalScore;
+   	   //End of the game ---- win condition
+   	   if(level === 2){
+   	   	   endGame();
+   	   }
     }
     function endGame() {
     	    //create an end screen
     	    //display the score
     	    //add to the end of level array?
     }
+    
 };
