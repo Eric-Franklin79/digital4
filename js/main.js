@@ -7,6 +7,7 @@ window.onload = function() {
     
     function preload() {
        game.load.tilemap('level1', 'assets/tilemaps.json', null, Phaser.Tilemap.TILED_JSON);
+       game.load.tilemap('level2', 'assets/level2.json', null, Phaser.Tilemap.TILED_JSON);       
        game.load.image('gameTiles', 'assets/hospitla-tileset.png');
        game.load.image('bloodbag', 'assets/bloodbag.png');
        game.load.image('cooler', 'assets/cooler.png');
@@ -22,7 +23,9 @@ window.onload = function() {
        game.load.image('upA', 'assets/upA.png');
        game.load.image('down', 'assets/down.png');
        game.load.image('downA', 'assets/downA.png');
+       //
        game.load.image('r', 'assets/r.png');
+       game.load.image('endScreen', 'assets/endScreen.png');
 
     }
     var bloodBags = 0;
@@ -40,8 +43,10 @@ window.onload = function() {
     var currentLevel = 1;
     var levelString = '';
     var playerx = 0, playery = 0, bloodBagID = 0, endID = 0;
+    var endBool = false;
     
-   function create() {
+   function create(){
+   	   resetScreen = game.add.sprite(0,0, 'restartLevel');
    	   var background = game.add.sprite(641, 0, 'background');
    	   levels(currentLevel);
    	   
@@ -62,62 +67,62 @@ window.onload = function() {
    	   down = game.add.sprite(710, 375, 'down');
    	   r = game.add.sprite(645, 310, 'r');
    	   
-   	   resetScreen = game.add.sprite(0,0, 'restartLevel');
-   	   resetScreen.kill();
-   	   var styleR = { font: "bold 25px Verdana", fill: "#FFFFFF", align: "center" };
-   	   restartText = game.add.text( 240, 320, "", styleR);
+   	   
    }
     
     function update() {
-    	game.physics.arcade.collide(cooler, blocktile);
-    	game.physics.arcade.overlap(cooler, bags, drinkBlood, null, this);
-    	game.physics.arcade.overlap(cooler, end, exitToNext, null, this);
-    	
-	cooler.body.velocity.x = 0;
-	cooler.body.velocity.y = 0;
-	left.loadTexture('left');
-	right.loadTexture('right');
-	up.loadTexture('up');
-	down.loadTexture('down');
-	if(cursor.left.isDown){
-		left.loadTexture('leftA');
-		if(!bloodTime.running){
-			bloodTime.start();
+    	    if(!endBool){
+		game.physics.arcade.collide(cooler, blocktile);
+		game.physics.arcade.overlap(cooler, bags, drinkBlood, null, this);
+		game.physics.arcade.overlap(cooler, end, exitToNext, null, this);
+		
+		cooler.body.velocity.x = 0;
+		cooler.body.velocity.y = 0;
+		left.loadTexture('left');
+		right.loadTexture('right');
+		up.loadTexture('up');
+		down.loadTexture('down');
+		if(cursor.left.isDown){
+			left.loadTexture('leftA');
+			if(!bloodTime.running){
+				bloodTime.start();
+			}
+			cooler.body.velocity.x = -64;	
 		}
-		cooler.body.velocity.x = -64;	
-	}
-	else if(cursor.right.isDown){
-		right.loadTexture('rightA');
-		if(!bloodTime.running){
-			bloodTime.start();
+		else if(cursor.right.isDown){
+			right.loadTexture('rightA');
+			if(!bloodTime.running){
+				bloodTime.start();
+			}
+			cooler.body.velocity.x = 64;
 		}
-		cooler.body.velocity.x = 64;
-	}
-	if(cursor.up.isDown){
-		up.loadTexture('upA');
-		if(!bloodTime.running){
-			bloodTime.start();
+		if(cursor.up.isDown){
+			up.loadTexture('upA');
+			if(!bloodTime.running){
+				bloodTime.start();
+			}
+			cooler.body.velocity.y = -64;
 		}
-		cooler.body.velocity.y = -64;
-	}
-	else if(cursor.down.isDown){
-		down.loadTexture('downA');
-		if(!bloodTime.running){
-			bloodTime.start();
+		else if(cursor.down.isDown){
+			down.loadTexture('downA');
+			if(!bloodTime.running){
+				bloodTime.start();
+			}
+			cooler.body.velocity.y = 64;
 		}
-		cooler.body.velocity.y = 64;
-	}
-    	
-    	if(bloodTime.seconds < 20){
-    		bloodText.setText('Blood: ' + String(((20 - Math.floor(bloodTime.seconds))/20)*100) + '%');
-    	}
-    	else{
-    		bloodText.setText('Blood: 0%');
-    		endLevel(false);
-    	}
-    	if(reset.isDown){
-    		endLevel(true);
-    	}
+		
+		if(bloodTime.seconds < 20){
+			bloodText.setText('Blood: ' + String(((20 - Math.floor(bloodTime.seconds))/20)*100) + '%');
+		}
+		else{
+			bloodText.setText('Blood: 0%');
+			endLevel(false);
+		}
+		if(reset.isDown){
+			endLevel(true);
+		}
+    	    }
+    	    
     }
     function drinkBlood(player, item){
     	    item.kill();
@@ -137,15 +142,17 @@ window.onload = function() {
     	    endLevel(true);
     }
     function endLevel(reset){
-    	   resetScreen.kill()
+    	   //resetScreen.kill()
+    	   map.destroy();
     	   bags.destroy();
     	   end.destroy();
     	   cooler.kill();
     	   bloodTime.destroy();
-    	   map.destroy();
-    	   restartText.setText("");
+    	   //map.destroy();
+    	   //restartText.setText("");
     	   bloodText.setText("");
     	   scoreText.setText("");
+    	   levelText.setText("");
 	   if(reset){
 	   	cooler.destroy();
 		bloodTime = game.time.create(false);
@@ -153,11 +160,13 @@ window.onload = function() {
 		levels(currentLevel);
     	   }
     	   else{
-    	   	resetScreen.revive();
-    	   	restartText.setText("Press R to Restart the Level");	
+    	   	resetScreen = game.add.sprite(0,0, 'restartLevel');
+    	   	var styleR = { font: "bold 25px Verdana", fill: "#FFFFFF", align: "center" };
+    	   	restartText = game.add.text( 240, 320, "Press R to Restart the Level", styleR);
     	   }
     }
     function levels(level){
+    	   resetScreen.destroy();
     	   if(level === 1){
     	    	    levelString = 'level1';
     	    	    playerx = 60;
@@ -165,6 +174,14 @@ window.onload = function() {
     	    	    bloodBagID = 33;
     	    	    endID = 23;
     	    	    bloodBags = 6;
+    	   }
+    	   else if(level === 2){
+    	   	   levelString = 'level2';
+    	   	   playerx = 32;
+    	   	   playery = 32;
+    	   	   bloodBagID = 33;
+    	   	   endID = 23;
+    	   	   bloodBags = 8;
     	   }
     	   map = game.add.tilemap(levelString);
    	   map.addTilesetImage('hospitla-tileset', 'gameTiles');
@@ -189,13 +206,15 @@ window.onload = function() {
    	   map.createFromObjects('end', endID, 'exit', 0, true, false, end);
    	   score = finalScore;
    	   //End of the game ---- win condition
-   	   if(level === 2){
+   	   if(level === 3){
    	   	   endGame();
    	   }
     }
     function endGame() {
-    	    //create an end screen
-    	    //display the score
+    	   endBool = true;
+    	    var end = game.add.sprite(0,0, 'endScreen');
+    	    var style = { font: "bold 25px Verdana", fill: "#FFFFFF", align: "center" };
+    	    var text = game.add.text(310, 75, 'Final Score: ' + String(finalScore), style);
     }
     
 };
