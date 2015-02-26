@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>Pew Pew</title>
+    <title>boop</title>
     <script src="js/phaser.js"></script>
     <script src="js/main.js"></script>
 
@@ -22,63 +22,46 @@ body
 <body>
 <div id="game"></div>
 <div id="readme">
-<h2>Train to Aim</h2>
+<h2>Race to surgery</h2>
 <ul>
 
 <li><strong>High Concept:</strong>
-Aim and Shoot the target in front of you
 </li>
 
 <li><strong>Player Experience Goals:</strong>
-I want the player to read the story and play the game like their life is determined by this one exam. 
 </li>
 
 <li><strong>Genre:</strong>
-3rd person shooter
 </li>
 
 <li><strong>Game play:</strong>
-The game play is pretty simple, point and click to shoot the gun onto the target, R to reload the gun, and E to get a new target.
 </li>
 
 <li><strong>Prototype goal:</strong>
-Usually when you hear about police with a grudge, you see the entire chase between the cop and the bad guy. But what if that police never got
- accepted into the academy? My goal to take this idea of a police with a grudge and change it into a man vs the police.
 </li>
 
 <li><strong>Features:</strong>
-The feature for this game are to shoot, reload, and get a new target. I wanted to add in more like moving the target, some animation, sounds,
- and different points but trying to figure out how to transcribe the bullet holes to move with the target took too much of my time.
 </li>
 
 <li><strong>Setting/Premise:</strong>
-The setting in inside a police shooting range
 </li>
 
 <li><strong>Story:</strong>
-When you were 14 both of your parents were shot dead in a brutal murder. You have pledged your life to hunt this murderer down and serve
- them the justice they deserve. But first you have to pass the police entrance test. The only thing between you and your goal is to pass 
- the shooting exam. Time to practice and ace this exam.
 </li>
 
 <li><strong>Target Audience:</strong>
-The target audience would be 10+, so they can understand and feel the story.
 </li>
 
 <li><strong>Play time:</strong>
-It takes around 1 mintute to play, but you can keep playing as long as you like.
 </li>
 
 <li><strong>Strategies:</strong>
-Squint your eyes, look really close at where you are aiming.
 </li>
 
 <li><strong>Prototype Assets:</strong>
-I created all of my own assets.
 </li>
 
 <li><strong>Prototype Closest Other Game:</strong>
-I didn't look to see what games my prototype resembles but I'm pretty sure there is one out there.
 </li>
 
 </ul>
